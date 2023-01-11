@@ -17,6 +17,7 @@ public class Playing extends State implements Statemethods {
 
     public Playing(Game game) {
         super(game);
+        initClasses();
     }
 
     private void initClasses() {
