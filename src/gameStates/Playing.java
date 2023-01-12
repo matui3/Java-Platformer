@@ -14,6 +14,7 @@ public class Playing extends State implements Statemethods {
 
     private Player player;
     private LevelManager levelManager;
+    private boolean paused;
 
     public Playing(Game game) {
         super(game);
@@ -83,6 +84,7 @@ public class Playing extends State implements Statemethods {
                 break;
             case KeyEvent.VK_BACK_SPACE:
                 Gamestate.state = Gamestate.MENU;
+                break;
         }
     }
 
