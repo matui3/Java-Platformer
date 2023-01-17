@@ -2,13 +2,12 @@ package utilz;
 
 import main.Game;
 
-import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public class HelpMethods {
 
     // collison for corners
-    public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {
+    public static boolean canMoveHere(float x, float y, float width, float height, int[][] lvlData) {
         if (!isSolid(x, y, lvlData)) { // top left
             if (!isSolid(x+width, y+height, lvlData)) { // bottom right
                 if (!isSolid(x + width, y, lvlData)) { // top right
@@ -31,8 +30,12 @@ public class HelpMethods {
         }
         float xIndex = x/Game.TILES_SIZE;
         float yIndex = y/Game.TILES_SIZE;
+        return isTileSolid((int) xIndex, (int) yIndex, lvlData);
 
-        int value = lvlData[(int) yIndex][(int) xIndex];
+    }
+
+    public static boolean isTileSolid(int xTile, int yTile, int[][] lvlData) {
+        int value = lvlData[yTile][xTile];
 
         if (value >= 48 || value < 0 || value != 11) {
             return true;
@@ -70,6 +73,33 @@ public class HelpMethods {
         // Check the pixel below bootomleft and bottomright
         if (!isSolid(hitbox.x, hitbox.y+hitbox.height + 1, lvlData)) {
             if (!isSolid(hitbox.x + hitbox.width, hitbox.y+hitbox.height + 1, lvlData)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isFloor(Rectangle2D.Float hitbox, float xSpeed,int[][] lvlData) {
+        return isSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
+    }
+
+    public static boolean isSightClear(int[][] lvlData, Rectangle2D.Float firstHitbox,
+                                       Rectangle2D.Float secondHitbox, int yTile) {
+        int firstXTile = (int) (firstHitbox.x / Game.TILES_SIZE);
+        int secondXTile = (int) (secondHitbox.x / Game.TILES_SIZE);
+        if (firstXTile > secondXTile) {
+            return isAllTilesWalkable(secondXTile, firstXTile, yTile, lvlData);
+        } else {
+            return isAllTilesWalkable(firstXTile, secondXTile, yTile, lvlData);
+        }
+    }
+
+    public static boolean isAllTilesWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
+        for (int i = 0; i < xEnd - xStart; i++) {
+            if (isTileSolid(xStart + i, y, lvlData)) {
+                return false;
+            }
+            if (!isTileSolid(xStart + i, y + 1, lvlData)) {
                 return false;
             }
         }

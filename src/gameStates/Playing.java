@@ -1,5 +1,6 @@
 package gameStates;
 
+import entities.EnemyManager;
 import entities.Player;
 import levels.LevelManager;
 import main.Game;
@@ -19,6 +20,7 @@ public class Playing extends State implements Statemethods {
 
     private Player player;
     private LevelManager levelManager;
+    private EnemyManager enemyManager;
     private PauseOverlay pauseOverlay;
     private boolean paused = false;
     private int xLvlOffset;
@@ -44,6 +46,7 @@ public class Playing extends State implements Statemethods {
         for (int i = 0; i < smallCloudsPos.length; i++) {
             smallCloudsPos[i] = (int) (90 * SCALE) + r.nextInt((int) (100 * SCALE));
         }
+        enemyManager = new EnemyManager(this);
     }
 
     private void initClasses() {
@@ -67,6 +70,7 @@ public class Playing extends State implements Statemethods {
         if (!paused) {
             levelManager.update();
             player.update();
+            enemyManager.update(levelManager.getCurrentLevel().getLevelData(), player);
             checkCloseToBorder();
         } else {
             pauseOverlay.update();
@@ -98,6 +102,7 @@ public class Playing extends State implements Statemethods {
 
         levelManager.draw(g, xLvlOffset);
         player.render(g, xLvlOffset);
+        enemyManager.draw(g, xLvlOffset);
 
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
@@ -160,10 +165,10 @@ public class Playing extends State implements Statemethods {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_A:
                 player.setLeft(true);
                 break;
-            case KeyEvent.VK_RIGHT:
+            case KeyEvent.VK_D:
                 player.setRight(true);
                 break;
             case KeyEvent.VK_SPACE:
@@ -178,10 +183,10 @@ public class Playing extends State implements Statemethods {
     @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_A:
                 player.setLeft(false);
                 break;
-            case KeyEvent.VK_RIGHT:
+            case KeyEvent.VK_D:
                 player.setRight(false);
                 break;
             case KeyEvent.VK_SPACE:
