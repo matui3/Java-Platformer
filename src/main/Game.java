@@ -1,6 +1,9 @@
 package main;
 
 import java.awt.Graphics;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import gameStates.Gamestate;
 import gameStates.Menu;
 import gameStates.Playing;
@@ -27,17 +30,18 @@ public class Game implements Runnable {
 	public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
 	public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 
-	public Game() {
+	public Game() throws URISyntaxException, IOException {
 		initClasses();
 
 		gamePanel = new GamePanel(this);
 		gameWindow = new GameWindow(gamePanel);
+		gamePanel.setFocusable(true);
 		gamePanel.requestFocus();
 
 		startGameLoop();
 	}
 
-	private void initClasses() {
+	private void initClasses() throws URISyntaxException, IOException {
 		menu = new Menu(this);
 		playing = new Playing(this);
 	}
